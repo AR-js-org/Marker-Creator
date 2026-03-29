@@ -1,4 +1,7 @@
 export class ArPatternFile {
+    private static sharedCanvas: HTMLCanvasElement = document.createElement('canvas');
+    private static sharedContext: CanvasRenderingContext2D | null = ArPatternFile.sharedCanvas.getContext('2d');
+
     constructor() {
 
     }
@@ -6,6 +9,7 @@ export class ArPatternFile {
     static toCanvas (patternFileString: string, onComplete: Function){
         console.assert(false, 'not yet implemented')
     }
+
     static encodeImageURL(imageURL: string, onComplete: Function){
         const image = new Image;
         image.onload = function(){
@@ -16,19 +20,15 @@ export class ArPatternFile {
     }
 
     static encodeImage(image: any){
-        // copy image on canvas
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
+        const canvas = ArPatternFile.sharedCanvas;
+        const context = ArPatternFile.sharedContext;
+        if (!context) return '';
+        
         canvas.width = 16;
         canvas.height = 16;
 
-        // document.body.appendChild(canvas)
-        // canvas.style.width = '200px'
-
-
         let patternFileString = '';
         for(let orientation = 0; orientation > -2*Math.PI; orientation -= Math.PI/2){
-            // draw on canvas - honor orientation
             context.save();
             context.clearRect(0,0,canvas.width,canvas.height);
             context.translate(canvas.width/2,canvas.height/2);
@@ -36,14 +36,10 @@ export class ArPatternFile {
             context.drawImage(image, -canvas.width/2,-canvas.height/2, canvas.width, canvas.height);
             context.restore();
 
-            // get imageData
             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 
-            // generate the patternFileString for this orientation
             if( orientation !== 0 )	patternFileString += '\n'
-            // NOTE bgr order and not rgb!!! so from 2 to 0
             for(let channelOffset = 2; channelOffset >= 0; channelOffset--){
-                // console.log('channelOffset', channelOffset)
                 for(let y = 0; y < imageData.height; y++){
                     for(let x = 0; x < imageData.width; x++){
 
@@ -62,8 +58,7 @@ export class ArPatternFile {
         return patternFileString
     }
 
-    static triggerDownload(patternFileString, fileName = 'pattern-marker.patt'){
-        // tech from https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
+    static triggerDownload(patternFileString: string, fileName = 'pattern-marker.patt'){
         const domElement = window.document.createElement('a');
         domElement.href = window.URL.createObjectURL(new Blob([patternFileString], {type: 'text/plain'}));
         domElement.download = fileName;
@@ -72,21 +67,20 @@ export class ArPatternFile {
         document.body.removeChild(domElement)
     }
 
-    static buildFullMarker(innerImageURL, pattRatio, size, color, onComplete){
+    static buildFullMarker(innerImageURL: string, pattRatio: number, size: number, color: string, onComplete: Function){
         const whiteMargin = 0.1;
         const blackMargin = (1 - 2 * whiteMargin) * ((1 - pattRatio) / 2);
-        // var blackMargin = 0.2
-
         const innerMargin = whiteMargin + blackMargin;
 
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
+        const canvas = ArPatternFile.sharedCanvas;
+        const context = ArPatternFile.sharedContext;
+        if (!context) return;
+        
         canvas.width = canvas.height = size
 
         context.fillStyle = 'white';
         context.fillRect(0,0,canvas.width, canvas.height)
 
-        // copy image on canvas
         context.fillStyle = color;
         context.fillRect(
             whiteMargin * canvas.width,
@@ -95,7 +89,6 @@ export class ArPatternFile {
             canvas.height * (1-2*whiteMargin)
         );
 
-        // clear the area for innerImage (in case of transparent image)
         context.fillStyle = 'white';
         context.fillRect(
             innerMargin * canvas.width,
@@ -104,11 +97,8 @@ export class ArPatternFile {
             canvas.height * (1-2*innerMargin)
         );
 
-
-        // display innerImage in the middle
         const innerImage = document.createElement('img');
         innerImage.addEventListener('load', function(){
-            // draw innerImage
             context.drawImage(innerImage,
                 innerMargin * canvas.width,
                 innerMargin * canvas.height,
