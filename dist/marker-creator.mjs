@@ -1,69 +1,76 @@
-class g {
+var u = Object.defineProperty;
+var p = (d, i, t) => i in d ? u(d, i, { enumerable: !0, configurable: !0, writable: !0, value: t }) : d[i] = t;
+var w = (d, i, t) => p(d, typeof i != "symbol" ? i + "" : i, t);
+const o = class o {
   constructor() {
   }
-  static toCanvas(h, e) {
+  static toCanvas(i, t) {
     console.assert(!1, "not yet implemented");
   }
-  static encodeImageURL(h, e) {
-    const i = new Image();
-    i.onload = function() {
-      const a = g.encodeImage(i);
-      e(a);
-    }, i.src = h;
+  static encodeImageURL(i, t) {
+    const a = new Image();
+    a.onload = function() {
+      const r = o.encodeImage(a);
+      t(r);
+    }, a.src = i;
   }
-  static encodeImage(h) {
-    const e = document.createElement("canvas"), i = e.getContext("2d");
-    e.width = 16, e.height = 16;
-    let a = "";
+  static encodeImage(i) {
+    const t = o.sharedCanvas, a = o.sharedContext;
+    if (!a) return "";
+    t.width = 16, t.height = 16;
+    let r = "";
     for (let c = 0; c > -2 * Math.PI; c -= Math.PI / 2) {
-      i.save(), i.clearRect(0, 0, e.width, e.height), i.translate(e.width / 2, e.height / 2), i.rotate(c), i.drawImage(h, -e.width / 2, -e.height / 2, e.width, e.height), i.restore();
-      const r = i.getImageData(0, 0, e.width, e.height);
-      c !== 0 && (a += `
+      a.save(), a.clearRect(0, 0, t.width, t.height), a.translate(t.width / 2, t.height / 2), a.rotate(c), a.drawImage(i, -t.width / 2, -t.height / 2, t.width, t.height), a.restore();
+      const s = a.getImageData(0, 0, t.width, t.height);
+      c !== 0 && (r += `
 `);
-      for (let d = 2; d >= 0; d--)
-        for (let n = 0; n < r.height; n++) {
-          for (let t = 0; t < r.width; t++) {
-            t !== 0 && (a += " ");
-            const o = n * r.width * 4 + t * 4 + d, l = r.data[o];
-            a += String(l).padStart(3);
+      for (let g = 2; g >= 0; g--)
+        for (let n = 0; n < s.height; n++) {
+          for (let e = 0; e < s.width; e++) {
+            e !== 0 && (r += " ");
+            const h = n * s.width * 4 + e * 4 + g, l = s.data[h];
+            r += String(l).padStart(3);
           }
-          a += `
+          r += `
 `;
         }
     }
-    return a;
+    return r;
   }
-  static triggerDownload(h, e = "pattern-marker.patt") {
-    const i = window.document.createElement("a");
-    i.href = window.URL.createObjectURL(new Blob([h], { type: "text/plain" })), i.download = e, document.body.appendChild(i), i.click(), document.body.removeChild(i);
+  static triggerDownload(i, t = "pattern-marker.patt") {
+    const a = window.document.createElement("a");
+    a.href = window.URL.createObjectURL(new Blob([i], { type: "text/plain" })), a.download = t, document.body.appendChild(a), a.click(), document.body.removeChild(a);
   }
-  static buildFullMarker(h, e, i, a, c) {
-    const n = 0.1 + 0.8 * ((1 - e) / 2), t = document.createElement("canvas"), o = t.getContext("2d");
-    t.width = t.height = i, o.fillStyle = "white", o.fillRect(0, 0, t.width, t.height), o.fillStyle = a, o.fillRect(
-      0.1 * t.width,
-      0.1 * t.height,
-      t.width * (1 - 2 * 0.1),
-      t.height * (1 - 2 * 0.1)
-    ), o.fillStyle = "white", o.fillRect(
-      n * t.width,
-      n * t.height,
-      t.width * (1 - 2 * n),
-      t.height * (1 - 2 * n)
+  static buildFullMarker(i, t, a, r, c) {
+    const n = 0.1 + 0.8 * ((1 - t) / 2), e = o.sharedCanvas, h = o.sharedContext;
+    if (!h) return;
+    e.width = e.height = a, h.fillStyle = "white", h.fillRect(0, 0, e.width, e.height), h.fillStyle = r, h.fillRect(
+      0.1 * e.width,
+      0.1 * e.height,
+      e.width * (1 - 2 * 0.1),
+      e.height * (1 - 2 * 0.1)
+    ), h.fillStyle = "white", h.fillRect(
+      n * e.width,
+      n * e.height,
+      e.width * (1 - 2 * n),
+      e.height * (1 - 2 * n)
     );
     const l = document.createElement("img");
     l.addEventListener("load", function() {
-      o.drawImage(
+      h.drawImage(
         l,
-        n * t.width,
-        n * t.height,
-        t.width * (1 - 2 * n),
-        t.height * (1 - 2 * n)
+        n * e.width,
+        n * e.height,
+        e.width * (1 - 2 * n),
+        e.height * (1 - 2 * n)
       );
-      const s = t.toDataURL();
-      c(s);
-    }), l.src = h;
+      const f = e.toDataURL();
+      c(f);
+    }), l.src = i;
   }
-}
+};
+w(o, "sharedCanvas", document.createElement("canvas")), w(o, "sharedContext", o.sharedCanvas.getContext("2d"));
+let m = o;
 export {
-  g as ArPatternFile
+  m as ArPatternFile
 };
