@@ -1,5 +1,12 @@
 # Marker-Creator
 
+[![npm version](https://img.shields.io/npm/v/@ar-js-org/marker-creator.svg?style=flat-square)](https://www.npmjs.com/package/@ar-js-org/marker-creator)
+[![npm downloads](https://img.shields.io/npm/dm/@ar-js-org/marker-creator.svg?style=flat-square)](https://www.npmjs.com/package/@ar-js-org/marker-creator)
+[![GitHub stars](https://img.shields.io/github/stars/AR-js-org/Marker-Creator?style=flat-square)](https://github.com/AR-js-org/Marker-Creator/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/AR-js-org/Marker-Creator?style=flat-square)](https://github.com/AR-js-org/Marker-Creator/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/AR-js-org/Marker-Creator?style=flat-square)](https://github.com/AR-js-org/Marker-Creator/issues)
+[![License](https://img.shields.io/github/license/AR-js-org/Marker-Creator?style=flat-square)](https://github.com/AR-js-org/Marker-Creator/blob/main/LICENSE)
+
 Marker-Creator is a tool to generate AR.js compatible pattern markers from your own images. It allows you to create custom markers for AR.js-based applications easily and quickly.
 
 ## Project Intent
