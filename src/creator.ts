@@ -1,16 +1,34 @@
+/**
+ * Utilities for creating AR.js/ARToolKit pattern markers from images.
+ *
+ * This module provides functions to generate marker pattern files and marker images
+ * from user-supplied images, supporting customization of pattern ratio, image size, and border color.
+ *
+ * @module creator
+ * @see https://github.com/AR-js-org/Marker-Creator
+ */
+
 export class ArPatternFile {
     private static sharedCanvas: HTMLCanvasElement = document.createElement('canvas');
     private static sharedContext: CanvasRenderingContext2D | null = ArPatternFile.sharedCanvas.getContext('2d');
 
-    constructor() {
+    constructor() {}
 
-    }
-
-    static toCanvas (patternFileString: string, onComplete: Function){
+    /**
+     * Converts a pattern file string to a canvas image. (Not yet implemented)
+     * @param patternFileString The string content of the pattern file.
+     * @param onComplete Callback function to receive the canvas image.
+     */
+    static toCanvas(patternFileString: string, onComplete: Function) {
         console.assert(false, 'not yet implemented')
     }
 
-    static encodeImageURL(imageURL: string, onComplete: Function){
+    /**
+     * Encodes an image (provided as a DataURL) into a pattern file string.
+     * @param imageURL The DataURL of the image to encode.
+     * @param onComplete Callback function to receive the pattern file string.
+     */
+    static encodeImageURL(imageURL: string, onComplete: Function) {
         const image = new Image;
         image.onload = function(){
             const patternFileString = ArPatternFile.encodeImage(image);
@@ -19,7 +37,12 @@ export class ArPatternFile {
         image.src = imageURL;
     }
 
-    static encodeImage(image: any){
+    /**
+     * Encodes an image (CanvasImageSource) into a pattern file string.
+     * @param image The image source to encode (HTMLImageElement, HTMLCanvasElement, etc.).
+     * @returns The encoded pattern file string.
+     */
+    static encodeImage(image: CanvasImageSource) {
         const canvas = ArPatternFile.sharedCanvas;
         const context = ArPatternFile.sharedContext;
         if (!context) return '';
@@ -58,7 +81,12 @@ export class ArPatternFile {
         return patternFileString
     }
 
-    static triggerDownload(patternFileString: string, fileName = 'pattern-marker.patt'){
+    /**
+     * Triggers a download of the pattern file string as a .patt file.
+     * @param patternFileString The pattern file string to download.
+     * @param fileName The name of the file to save (default: 'pattern-marker.patt').
+     */
+    static triggerDownload(patternFileString: string, fileName = 'pattern-marker.patt') {
         const domElement = window.document.createElement('a');
         domElement.href = window.URL.createObjectURL(new Blob([patternFileString], {type: 'text/plain'}));
         domElement.download = fileName;
@@ -67,7 +95,15 @@ export class ArPatternFile {
         document.body.removeChild(domElement)
     }
 
-    static buildFullMarker(innerImageURL: string, pattRatio: number, size: number, color: string, onComplete: Function){
+    /**
+     * Builds a full marker image (PNG) with the specified parameters and returns it as a DataURL.
+     * @param innerImageURL The DataURL of the inner image to embed in the marker.
+     * @param pattRatio The ratio of the inner image to the marker size (0.1 - 0.9 recommended).
+     * @param size The size (in pixels) of the output marker image.
+     * @param color The border color (CSS color string or hex code).
+     * @param onComplete Callback function to receive the marker image DataURL.
+     */
+    static buildFullMarker(innerImageURL: string, pattRatio: number, size: number, color: string, onComplete: Function) {
         const whiteMargin = 0.1;
         const blackMargin = (1 - 2 * whiteMargin) * ((1 - pattRatio) / 2);
         const innerMargin = whiteMargin + blackMargin;

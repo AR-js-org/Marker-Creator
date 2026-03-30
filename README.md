@@ -14,6 +14,34 @@ You can install Marker-Creator via npm:
 npm install @ar-js-org/marker-creator
 ```
 
+## Usage
+
+### Import as ES Module (in your code)
+
+```js
+// Import in a JavaScript/TypeScript project
+import { ArPatternFile } from '@ar-js-org/marker-creator';
+
+// Example usage:
+ArPatternFile.encodeImageURL(imageDataUrl, (patternFileString) => {
+  // Do something with the pattern file string
+});
+```
+
+### Load from CDN (browser, e.g. with raw.githack.com)
+
+You can use the UMD bundle directly in the browser without npm:
+
+```html
+<script src="https://raw.githack.com/AR-js-org/Marker-Creator/main/dist/marker-creator.umd.js"></script>
+<script>
+  // Access via window.MarkerCreator.ArPatternFile
+  window.MarkerCreator.ArPatternFile.encodeImageURL(imageDataUrl, function(patternFileString) {
+    // Do something with the pattern file string
+  });
+</script>
+```
+
 ## Example
 
 A complete example is provided in the `examples/generator.html` file. This example demonstrates how to use the Marker-Creator library to upload an image, adjust marker parameters, preview the result, and download the generated marker files.
