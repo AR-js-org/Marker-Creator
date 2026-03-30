@@ -8,7 +8,15 @@
  * @see https://github.com/AR-js-org/Marker-Creator
  */
 
+import pkg from '../package.json';
+
 export class ArPatternFile {
+    /**
+     * Version of the ArPatternFile class and pattern format, imported from package.json.
+     * Update the version in package.json to change this value.
+     */
+    static version = pkg.version;
+
     private static sharedCanvas: HTMLCanvasElement = document.createElement('canvas');
     private static sharedContext: CanvasRenderingContext2D | null = ArPatternFile.sharedCanvas.getContext('2d');
 
